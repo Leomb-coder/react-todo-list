@@ -1,3 +1,5 @@
+import ButtonComponent from "./ButtonComponent";
+
 function ItemComponent({ tarefa, indice, removerTarefa, concluirTarefa }) {
 	return (
 		<li className="item" key={indice}>
@@ -6,11 +8,16 @@ function ItemComponent({ tarefa, indice, removerTarefa, concluirTarefa }) {
 			</span>
 
 			<div className="acoes">
-				<button onClick={() => concluirTarefa(indice)}>
-					{tarefa.concluida ? "Desfazer" : "Concluir"}
-				</button>
 
-				<button onClick={() => removerTarefa(indice)}>X</button>
+				<ButtonComponent
+					onClick={() => concluirTarefa(indice)}
+					buttonText={tarefa.concluida ? "Desfazer" : "Concluir"}
+				/>
+
+				<ButtonComponent
+					onClick={() => removerTarefa(indice)}
+					buttonText={"X"}
+				/>
 			</div>
 		</li>
 	);
