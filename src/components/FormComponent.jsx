@@ -1,3 +1,5 @@
+import ButtonComponent from "./ButtonComponent";
+
 function FormComponent({ texto, adicionarTarefa, setTexto }) {
 	return (
 		<div className="box">
@@ -17,7 +19,10 @@ function FormComponent({ texto, adicionarTarefa, setTexto }) {
 
 			<p className="digitado">Você digitou: {texto}</p>
 
-			<button onClick={adicionarTarefa}>Adicionar</button>
+			<ButtonComponent
+				onClick={adicionarTarefa}
+				buttonText={"Adicionar"}
+			/>
 		</div>
 	);
 }

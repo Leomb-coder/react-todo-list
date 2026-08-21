@@ -2,21 +2,19 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import FormComponent from "./components/FormComponent";
 import ListComponents from "./components/ListComponent";
+import ButtonComponent from "./components/ButtonComponent.jsx";
+import HeaderComponent from "./components/HeaderComponent.jsx";
+import FooterComponent from "./components/FooterComponent.jsx";
 
 function App() {
 	const [texto, setTexto] = useState("");
 	const [tarefas, setTarefas] = useState(() => {
-		const tarefasSalvas = localStorage.getItem(
-			"tarefas"
-		)
-		return tarefasSalvas ? JSON.parse(tarefasSalvas) : []
+		const tarefasSalvas = localStorage.getItem("tarefas");
+		return tarefasSalvas ? JSON.parse(tarefasSalvas) : [];
 	});
 
 	useEffect(() => {
-		localStorage.setItem(
-			"tarefas",
-			JSON.stringify(tarefas)
-		)
+		localStorage.setItem("tarefas", JSON.stringify(tarefas));
 	}, [tarefas]);
 
 	function adicionarTarefa() {
@@ -68,7 +66,10 @@ function App() {
 
 	return (
 		<div className="container">
-			<h1>Lista de Tarefas</h1>
+
+			<HeaderComponent
+				headerText={'Lista de Tarefas'}
+			/>
 
 			{tarefas.length === 0 && (
 				<p className="vazio">Nenhuma tarefa cadastrada</p>
@@ -88,7 +89,14 @@ function App() {
 
 			<p className="digitado">Total de tarefas: {tarefas.length}</p>
 
-			<button onClick={limparTarefas}>Limpar Tarefas</button>
+			<ButtonComponent
+				onClick={limparTarefas}
+				buttonText={"Limpar tarefas"}
+			/>
+
+			<FooterComponent
+				footerText={'Leomb - Leomb Company © - 2026'}
+			/>
 		</div>
 	);
 }
