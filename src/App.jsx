@@ -1,113 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
+import FormComponent from "./components/FormComponent";
+import ListComponents from "./components/ListComponent";
 
 function App() {
+	const [texto, setTexto] = useState("");
+	const [tarefas, setTarefas] = useState(() => {
+		const tarefasSalvas = localStorage.getItem(
+			"tarefas"
+		)
+		return tarefasSalvas ? JSON.parse(tarefasSalvas) : []
+	});
 
-    const [texto, setTexto] = useState("");
-    const [tarefas, setTarefas] = useState([]);
+	useEffect(() => {
+		localStorage.setItem(
+			"tarefas",
+			JSON.stringify(tarefas)
+		)
+	}, [tarefas]);
 
-    function adicionarTarefa() {
-        if (texto.trim() != "") {
-            const tarefaJaExiste = tarefas.find(tarefa => tarefa.texto === texto)
-            if (tarefaJaExiste) {
-                alert('Tarefa ja existe')
-                return
-            }
+	function adicionarTarefa() {
+		if (texto.trim() != "") {
+			const tarefaJaExiste = tarefas.find(
+				(tarefa) => tarefa.texto === texto,
+			);
+			if (tarefaJaExiste) {
+				alert("Tarefa ja existe");
+				return;
+			}
 
-            const tarefa = {
-                texto: texto,
-                concluida: false
-            }
+			const tarefa = {
+				texto: texto,
+				concluida: false,
+			};
 
-            setTarefas([...tarefas, tarefa])
+			setTarefas([...tarefas, tarefa]);
 
-            setTexto("")
-            
-        }
-    }
+			setTexto("");
+		}
+	}
 
-    function limparTarefas() {
-        setTarefas([])
-    }
+	function limparTarefas() {
+		setTarefas([]);
+	}
 
-    function removerTarefa(indiceRemover) {
-        const listaAtualizada = tarefas.filter(
-            (tarefa, indice) => indice !== indiceRemover
-        )
+	function removerTarefa(indiceRemover) {
+		const listaAtualizada = tarefas.filter(
+			(tarefa, indice) => indice !== indiceRemover,
+		);
 
-        setTarefas(listaAtualizada)
-    }
+		setTarefas(listaAtualizada);
+	}
 
-    function concluirTarefa(indiceSelecionado) {
-        const listaAtualizada = tarefas.map(
-            (tarefa, indice) => {
-                if (indice === indiceSelecionado) {
-                    return {
-                        ...tarefas,
-                        concluida: !tarefa.concluida
-                    }
-                }
+	function concluirTarefa(indiceSelecionado) {
+		const listaAtualizada = tarefas.map((tarefa, indice) => {
+			if (indice === indiceSelecionado) {
+				return {
+					...tarefas,
+					concluida: !tarefa.concluida,
+				};
+			}
 
-                return tarefa
-            }
-        )
-        setTarefas(listaAtualizada)
-    }
+			return tarefa;
+		});
+		setTarefas(listaAtualizada);
+	}
 
-    return(
-        <div className="container">
-            <h1>Lista de Tarefas</h1>
+	return (
+		<div className="container">
+			<h1>Lista de Tarefas</h1>
 
-            <div className="formulario">
-                <input
-                    type="text"
-                    value={texto}
-                    onChange={(e) => setTexto(e.target.value)}
-                    placeholder="Digite uma tarefa"
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            adicionarTarefa();
-                        }
-                    }}
-                ></input>
-            </div>
+			{tarefas.length === 0 && (
+				<p className="vazio">Nenhuma tarefa cadastrada</p>
+			)}
 
-            <p className="digitado">Você digitou: {texto}</p>
+			<FormComponent
+				texto={texto}
+				adicionarTarefa={adicionarTarefa}
+				setTexto={setTexto}
+			/>
 
-            <button onClick={adicionarTarefa}>Adicionar</button>
+			<ListComponents
+				tarefas={tarefas}
+				removerTarefa={removerTarefa}
+				concluirTarefa={concluirTarefa}
+			/>
 
-            {
-                tarefas.length === 0 &&
-                <p className="vazio">Nenhuma tarefa cadastrada</p> 
-            }
+			<p className="digitado">Total de tarefas: {tarefas.length}</p>
 
-            <ul className="lista">
-                {tarefas.map((tarefa, indice) => (
-                    <li className="item" key={indice}>
-                        <span className={
-                                tarefa.concluida ? 'concluida' : ''
-                            }>{tarefa.texto}</span>
-
-                        <div className="acoes">
-                            <button onClick={() => concluirTarefa(indice)}>
-                                {tarefa.concluida ? 'Desfazer' : 'Concluir'}
-                            </button>
-
-                            <button onClick={() => removerTarefa(indice)}>
-                                X
-                            </button>
-                        </div>
-
-                    </li>
-                ))}
-            </ul>
-                
-            <p className="digitado">Total de tarefas: {tarefas.length}</p>
-
-            <button onClick={limparTarefas}>Limpar Tarefas</button>
-
-        </div>
-    );
+			<button onClick={limparTarefas}>Limpar Tarefas</button>
+		</div>
+	);
 }
 
 export default App;
